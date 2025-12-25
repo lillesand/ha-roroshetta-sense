@@ -1,12 +1,18 @@
 from __future__ import annotations
 
+import logging
+
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from bleak.exc import BleakError
+
 from .const import DOMAIN
 from .ble import SenseBleController
+
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
     controller: SenseBleController = hass.data[DOMAIN][entry.entry_id]
@@ -33,9 +39,14 @@ class SenseFanAutoSwitch(_BaseAutoSwitch):
         super().__init__(controller, "fan")
 
     async def async_turn_on(self, **kwargs) -> None:
-        await self._ctl.set_fan_auto()
-        self._attr_is_on = True
-        self.async_write_ha_state()
+        try:
+            await self._ctl.set_fan_auto()
+            self._attr_is_on = True
+            self.async_write_ha_state()
+        except BleakError as e:
+            _LOGGER.error("Failed to enable fan auto mode: %s", e)
+        except Exception as e:
+            _LOGGER.error("Unexpected error enabling fan auto mode: %s", e)
 
 class SenseLightAutoSwitch(_BaseAutoSwitch):
     _attr_name = "RorosHetta Light Auto"
@@ -44,6 +55,11 @@ class SenseLightAutoSwitch(_BaseAutoSwitch):
         super().__init__(controller, "light")
 
     async def async_turn_on(self, **kwargs) -> None:
-        await self._ctl.set_light_auto()
-        self._attr_is_on = True
-        self.async_write_ha_state()
+        try:
+            await self._ctl.set_light_auto()
+            self._attr_is_on = True
+            self.async_write_ha_state()
+        except BleakError as e:
+            _LOGGER.error("Failed to enable light auto mode: %s", e)
+        except Exception as e:
+            _LOGGER.error("Unexpected error enabling light auto mode: %s", e)
