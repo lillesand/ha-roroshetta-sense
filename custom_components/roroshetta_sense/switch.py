@@ -33,7 +33,7 @@ class _BaseAutoSwitch(SwitchEntity):
         self.async_write_ha_state()
 
 class SenseFanAutoSwitch(_BaseAutoSwitch):
-    _attr_name = "RorosHetta Fan Auto"
+    _attr_name = "RørosHetta Fan Auto"
 
     def __init__(self, controller: SenseBleController) -> None:
         super().__init__(controller, "fan")
@@ -49,7 +49,7 @@ class SenseFanAutoSwitch(_BaseAutoSwitch):
             _LOGGER.error("Unexpected error enabling fan auto mode: %s", e)
 
 class SenseLightAutoSwitch(_BaseAutoSwitch):
-    _attr_name = "RorosHetta Light Auto"
+    _attr_name = "RørosHetta Light Auto"
 
     def __init__(self, controller: SenseBleController) -> None:
         super().__init__(controller, "light")

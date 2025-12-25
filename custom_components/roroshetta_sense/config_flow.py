@@ -23,7 +23,7 @@ class RorosHettaSenseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(identifier)
                 self._abort_if_unique_id_configured()
                 return self.async_create_entry(
-                    title="RorosHetta Sense",
+                    title="RørosHetta Sense",
                     data={
                         CONF_IDENTIFIER: identifier,
                         CONF_LIGHT_MAX_RAW: light_max_raw,

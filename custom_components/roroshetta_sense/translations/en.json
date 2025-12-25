@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "RorosHetta Sense (BLE)",
+        "title": "RørosHetta Sense (BLE)",
         "description": "Enter the BLE identifier/address used by the host running Home Assistant.",
         "data": {
           "identifier": "Device identifier/address",

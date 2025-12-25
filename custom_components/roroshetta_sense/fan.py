@@ -19,7 +19,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     async_add_entities([SenseFan(controller)], update_before_add=False)
 
 class SenseFan(FanEntity):
-    _attr_name = "RorosHetta Fan"
+    _attr_name = "RørosHetta Fan"
     _attr_supported_features = FanEntityFeature.SET_SPEED
     _attr_percentage = 0
     _attr_is_on = False

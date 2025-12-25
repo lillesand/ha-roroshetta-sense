@@ -19,7 +19,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     async_add_entities([SenseLight(controller)], update_before_add=False)
 
 class SenseLight(LightEntity):
-    _attr_name = "RorosHetta Light"
+    _attr_name = "RørosHetta Light"
     _attr_supported_color_modes = {ColorMode.BRIGHTNESS}
     _attr_color_mode = ColorMode.BRIGHTNESS
     _attr_brightness = 0

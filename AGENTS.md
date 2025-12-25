@@ -1,7 +1,7 @@
-# Codex instructions: RorosHetta/Snøhetta Sense Home Assistant integration
+# Codex instructions: RørosHetta Sense Home Assistant integration
 
 ## Goal
-Create/extend a Home Assistant **custom integration** that controls a RorosHetta/Snøhetta Sense kitchen ventilator over BLE using a known, verified protocol.
+Create/extend a Home Assistant **custom integration** that controls a RørosHetta Sense kitchen ventilator over BLE using a known, verified protocol.
 
 ## Non-negotiables (do not change)
 - Domain: `roroshetta_sense`
