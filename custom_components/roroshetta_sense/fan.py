@@ -20,6 +20,7 @@ class SenseFan(FanEntity):
 
     def __init__(self, controller: SenseBleController) -> None:
         self._ctl = controller
+        self._attr_unique_id = f"{controller._cfg.identifier}_fan"
 
     async def async_set_percentage(self, percentage: int) -> None:
         await self._ctl.set_fan_percent(percentage)

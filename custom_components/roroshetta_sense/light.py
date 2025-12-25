@@ -21,6 +21,7 @@ class SenseLight(LightEntity):
 
     def __init__(self, controller: SenseBleController) -> None:
         self._ctl = controller
+        self._attr_unique_id = f"{controller._cfg.identifier}_light"
 
     async def async_turn_on(self, **kwargs) -> None:
         brightness = int(kwargs.get("brightness", 255))
