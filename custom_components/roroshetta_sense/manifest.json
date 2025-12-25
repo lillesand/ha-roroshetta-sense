@@ -1,0 +1,14 @@
+{
+  "domain": "roroshetta_sense",
+  "name": "RorosHetta Sense (BLE)",
+  "version": "0.1.0",
+  "documentation": "https://example.invalid",
+  "issue_tracker": "https://example.invalid/issues",
+  "requirements": [
+    "bleak==0.22.3"
+  ],
+  "dependencies": [],
+  "codeowners": [],
+  "iot_class": "local_polling",
+  "config_flow": true
+}

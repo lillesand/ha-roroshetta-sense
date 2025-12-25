@@ -1,0 +1,9 @@
+DOMAIN = "roroshetta_sense"
+
+CONF_IDENTIFIER = "identifier"
+CONF_LIGHT_MAX_RAW = "light_max_raw"
+
+DEFAULT_LIGHT_MAX_RAW = 90
+
+SERVICE_UUID = "0000f00d-1212-efde-1523-785fef13d123"
+COMMAND_CHAR_UUID = "0000babe-1212-efde-1523-785fef13d123"

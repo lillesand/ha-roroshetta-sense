@@ -1,0 +1,17 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "RorosHetta Sense (BLE)",
+        "description": "Legg inn BLE-identifikator/adresse brukt av maskinen som kj\u00f8rer Home Assistant.",
+        "data": {
+          "identifier": "Enhetsidentifikator/adresse",
+          "light_max_raw": "Maks r\u00e5verdi for lys (standard 90)"
+        }
+      }
+    },
+    "error": {
+      "invalid_identifier": "Ugyldig identifikator"
+    }
+  }
+}
