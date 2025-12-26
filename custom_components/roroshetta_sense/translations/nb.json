@@ -2,16 +2,33 @@
   "config": {
     "step": {
       "user": {
-        "title": "RørosHetta Sense (BLE)",
-        "description": "Legg inn BLE-identifikator/adresse brukt av maskinen som kj\u00f8rer Home Assistant.",
+        "title": "Legg til RørosHetta Sense",
+        "description": "Skriv inn enhetsinformasjon manuelt",
         "data": {
-          "identifier": "Enhetsidentifikator/adresse",
-          "light_max_raw": "Maks r\u00e5verdi for lys (standard 90)"
+          "identifier": "Enhets MAC-adresse",
+          "light_max_raw": "Maks råverdi for lys (standard 90)"
+        }
+      },
+      "confirm_discovery": {
+        "title": "Fant RørosHetta Sense",
+        "description": "Fant enheten {name} ({identifier}). Vil du legge den til i Home Assistant?",
+        "data": {}
+      },
+      "configure": {
+        "title": "Konfigurer RørosHetta Sense",
+        "description": "Konfigurer innstillinger for {name} ({identifier})",
+        "data": {
+          "light_max_raw": "Maks råverdi for lys (standard 90)"
         }
       }
     },
     "error": {
-      "invalid_identifier": "Ugyldig identifikator"
+      "bluetooth_not_available": "Bluetooth ikke tilgjengelig",
+      "invalid_identifier": "Ugyldig MAC-adresse format",
+      "cannot_connect": "Kan ikke koble til enhet. Sørg for at den er slått på og i nærheten."
+    },
+    "abort": {
+      "bluetooth_not_available": "Bluetooth-integrasjonen er ikke tilgjengelig eller konfigurert."
     }
   }
 }

@@ -7,6 +7,8 @@ from typing import Optional
 
 from bleak import BleakClient
 from bleak.exc import BleakError, BleakDeviceNotFoundError
+from homeassistant.components import bluetooth
+from homeassistant.core import HomeAssistant
 
 from .const import COMMAND_CHAR_UUID, DEFAULT_LIGHT_MAX_RAW
 from .protocol import (
@@ -24,8 +26,9 @@ class DeviceConfig:
     fan_max_raw: int = FAN_MAX_RAW_DEFAULT
 
 class SenseBleController:
-    def __init__(self, cfg: DeviceConfig) -> None:
+    def __init__(self, cfg: DeviceConfig, hass: HomeAssistant) -> None:
         self._cfg = cfg
+        self._hass = hass
         self._client: Optional[BleakClient] = None
         self._lock = asyncio.Lock()
         self._connection_attempts = 0
@@ -41,7 +44,13 @@ class SenseBleController:
                     "Attempting BLE connection to %s (attempt %d/%d)",
                     self._cfg.identifier, attempt + 1, self._max_retries
                 )
-                self._client = BleakClient(self._cfg.identifier)
+                
+                # Use Home Assistant's bluetooth API to get the device
+                ble_device = bluetooth.async_ble_device_from_address(self._hass, self._cfg.identifier)
+                if not ble_device:
+                    raise BleakDeviceNotFoundError(f"Device {self._cfg.identifier} not reachable")
+                
+                self._client = BleakClient(ble_device, timeout=10.0)
                 await self._client.connect()
                 _LOGGER.debug("BLE connection successful to %s", self._cfg.identifier)
                 self._connection_attempts = 0

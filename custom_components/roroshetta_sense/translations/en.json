@@ -2,16 +2,33 @@
   "config": {
     "step": {
       "user": {
-        "title": "RørosHetta Sense (BLE)",
-        "description": "Enter the BLE identifier/address used by the host running Home Assistant.",
+        "title": "Add RørosHetta Sense",
+        "description": "Enter device information manually",
         "data": {
-          "identifier": "Device identifier/address",
+          "identifier": "Device MAC address",
+          "light_max_raw": "Light max raw level (default 90)"
+        }
+      },
+      "confirm_discovery": {
+        "title": "Found RørosHetta Sense",
+        "description": "Found device {name} ({identifier}). Do you want to add it to Home Assistant?",
+        "data": {}
+      },
+      "configure": {
+        "title": "Configure RørosHetta Sense",
+        "description": "Configure settings for {name} ({identifier})",
+        "data": {
           "light_max_raw": "Light max raw level (default 90)"
         }
       }
     },
     "error": {
-      "invalid_identifier": "Invalid identifier"
+      "bluetooth_not_available": "Bluetooth not available",
+      "invalid_identifier": "Invalid MAC address format",
+      "cannot_connect": "Cannot connect to device. Make sure it's powered on and nearby."
+    },
+    "abort": {
+      "bluetooth_not_available": "Bluetooth integration is not available or configured."
     }
   }
 }

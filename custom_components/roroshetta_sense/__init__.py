@@ -13,7 +13,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         identifier=entry.data["identifier"],
         light_max_raw=entry.data.get("light_max_raw", 90),
     )
-    controller = SenseBleController(cfg)
+    controller = SenseBleController(cfg, hass)
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = controller
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)

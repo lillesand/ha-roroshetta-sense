@@ -1,17 +1,30 @@
 {
   "config": {
     "step": {
-      "user": {
+      "discovery": {
         "title": "RørosHetta Sense (BLE)",
-        "description": "Enter the BLE identifier/address used by the host running Home Assistant.",
+        "description": "Searching for RørosHetta Sense devices...",
         "data": {
-          "identifier": "Device identifier/address",
+          "device": "Select device"
+        }
+      },
+      "configure": {
+        "title": "Configure RørosHetta Sense",
+        "description": "Configure settings for {device_name}",
+        "data": {
           "light_max_raw": "Light max raw level (default 90)"
         }
       }
     },
     "error": {
-      "invalid_identifier": "Invalid identifier"
+      "bluetooth_not_available": "Bluetooth not available",
+      "no_devices_found": "No RørosHetta Sense devices found. Make sure the device is powered on and nearby.",
+      "discovery_failed": "Device discovery failed. Check that Bluetooth is enabled.",
+      "device_not_found": "Selected device not found",
+      "cannot_connect": "Cannot connect to device. Make sure it's powered on and nearby."
+    },
+    "abort": {
+      "bluetooth_not_available": "Bluetooth integration is not available or configured."
     }
   }
 }
