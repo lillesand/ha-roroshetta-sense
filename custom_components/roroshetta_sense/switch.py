@@ -29,6 +29,7 @@ class _BaseAutoSwitch(SwitchEntity):
         self._attr_unique_id = f"{controller._cfg.identifier}_{switch_type}_auto"
 
     async def async_turn_off(self, **kwargs) -> None:
+        # Base implementation - each subclass should override this
         self._attr_is_on = False
         self.async_write_ha_state()
 
@@ -48,6 +49,17 @@ class SenseFanAutoSwitch(_BaseAutoSwitch):
         except Exception as e:
             _LOGGER.error("Unexpected error enabling fan auto mode: %s", e)
 
+    async def async_turn_off(self, **kwargs) -> None:
+        try:
+            # Disable auto mode by setting manual fan to 0%
+            await self._ctl.set_fan_percent(0)
+            self._attr_is_on = False
+            self.async_write_ha_state()
+        except BleakError as e:
+            _LOGGER.error("Failed to disable fan auto mode: %s", e)
+        except Exception as e:
+            _LOGGER.error("Unexpected error disabling fan auto mode: %s", e)
+
 class SenseLightAutoSwitch(_BaseAutoSwitch):
     _attr_name = "RørosHetta Light Auto"
 
@@ -63,3 +75,14 @@ class SenseLightAutoSwitch(_BaseAutoSwitch):
             _LOGGER.error("Failed to enable light auto mode: %s", e)
         except Exception as e:
             _LOGGER.error("Unexpected error enabling light auto mode: %s", e)
+
+    async def async_turn_off(self, **kwargs) -> None:
+        try:
+            # Disable auto mode by setting manual light to 0%
+            await self._ctl.set_light_percent(0)
+            self._attr_is_on = False
+            self.async_write_ha_state()
+        except BleakError as e:
+            _LOGGER.error("Failed to disable light auto mode: %s", e)
+        except Exception as e:
+            _LOGGER.error("Unexpected error disabling light auto mode: %s", e)
