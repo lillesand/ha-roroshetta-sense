@@ -1,3 +1,4 @@
 .DS_Store
 android-debug-dump
 research
+custom_components/roroshetta_sense/__pycache__/
