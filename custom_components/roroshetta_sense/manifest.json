@@ -4,9 +4,7 @@
   "version": "0.1.0",
   "documentation": "https://github.com/lillesand/ha-roroshetta-sense",
   "issue_tracker": "https://github.com/lillesand/ha-roroshetta-sense/issues",
-  "requirements": [
-    "bleak==0.22.3"
-  ],
+  "requirements": [],
   "dependencies": ["bluetooth_adapters"],
   "bluetooth": [
     {
