@@ -1,0 +1,7 @@
+{
+  "name": "RørosHetta Sense (BLE)",
+  "filename": "roroshetta_sense",
+  "render_readme": true,
+  "iot_class": "Local Polling",
+  "country": "NO"
+}
