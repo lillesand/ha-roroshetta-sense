@@ -1,3 +1,5 @@
+import logging
+
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
@@ -7,6 +9,10 @@ from .const import DOMAIN
 from .ble import DeviceConfig, SenseBleController
 
 PLATFORMS: list[str] = ["fan", "light", "switch"]
+
+_LOGGER = logging.getLogger(__name__)
+
+_LOGGER.info("Initializing Røroshetta Sense integration")
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     cfg = DeviceConfig(
