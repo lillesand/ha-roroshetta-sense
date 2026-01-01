@@ -3,7 +3,22 @@
     "step": {
       "user": {
         "title": "Add RørosHetta Sense",
-        "description": "Enter device information manually",
+        "description": "Choose how to set up your device",
+        "data": {
+          "setup_method": "Setup method"
+        }
+      },
+      "scan": {
+        "title": "Scan for RørosHetta Sense",
+        "description": "Put your RørosHetta Sense device in pairing mode by pressing the pairing button, then click submit to scan for devices.\n\nFound {count} device(s) in pairing mode:",
+        "data": {
+          "device": "Select device",
+          "action": "Action"
+        }
+      },
+      "manual": {
+        "title": "Manual Setup",
+        "description": "Put your device in pairing mode by pressing the pairing button, then enter the device information manually",
         "data": {
           "identifier": "Device MAC address",
           "light_max_raw": "Light max raw level (default 90)"
@@ -25,7 +40,9 @@
     "error": {
       "bluetooth_not_available": "Bluetooth not available",
       "invalid_identifier": "Invalid MAC address format",
-      "cannot_connect": "Cannot connect to device. Make sure it's powered on and nearby."
+      "cannot_connect": "Cannot connect to device. Make sure it's powered on and nearby.",
+      "no_devices_found": "No devices found in pairing mode. Make sure your device is in pairing mode and try again.",
+      "scan_failed": "Failed to scan for devices. Check that Bluetooth is working."
     },
     "abort": {
       "bluetooth_not_available": "Bluetooth integration is not available or configured."

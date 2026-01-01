@@ -3,7 +3,22 @@
     "step": {
       "user": {
         "title": "Legg til RørosHetta Sense",
-        "description": "Skriv inn enhetsinformasjon manuelt",
+        "description": "Velg hvordan du vil sette opp enheten din",
+        "data": {
+          "setup_method": "Oppsettmetode"
+        }
+      },
+      "scan": {
+        "title": "Søk etter RørosHetta Sense",
+        "description": "Sett RørosHetta Sense-enheten din i paringsmodous ved å trykke på paringsknappen, deretter klikk send inn for å søke etter enheter.\n\nFant {count} enhet(er) i paringsmodous:",
+        "data": {
+          "device": "Velg enhet",
+          "action": "Handling"
+        }
+      },
+      "manual": {
+        "title": "Manuelt oppsett",
+        "description": "Sett enheten din i paringsmodous ved å trykke på paringsknappen, deretter skriv inn enhetsinformasjon manuelt",
         "data": {
           "identifier": "Enhets MAC-adresse",
           "light_max_raw": "Maks råverdi for lys (standard 90)"
@@ -25,7 +40,9 @@
     "error": {
       "bluetooth_not_available": "Bluetooth ikke tilgjengelig",
       "invalid_identifier": "Ugyldig MAC-adresse format",
-      "cannot_connect": "Kan ikke koble til enhet. Sørg for at den er slått på og i nærheten."
+      "cannot_connect": "Kan ikke koble til enhet. Sørg for at den er slått på og i nærheten.",
+      "no_devices_found": "Ingen enheter funnet i paringsmodous. Sørg for at enheten din er i paringsmodous og prøv igjen.",
+      "scan_failed": "Kunne ikke søke etter enheter. Sjekk at Bluetooth fungerer."
     },
     "abort": {
       "bluetooth_not_available": "Bluetooth-integrasjonen er ikke tilgjengelig eller konfigurert."

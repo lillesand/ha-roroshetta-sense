@@ -17,7 +17,90 @@ class RorosHettaSenseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     async def async_step_user(self, user_input=None) -> FlowResult:
-        """Handle the user step when manually adding the integration."""
+        """Handle the user step - choose setup method."""
+        if user_input is not None:
+            if user_input["setup_method"] == "scan":
+                return await self.async_step_scan()
+            else:
+                return await self.async_step_manual()
+
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema({
+                vol.Required("setup_method", default="scan"): vol.In({
+                    "scan": "Scan for devices in pairing mode",
+                    "manual": "Enter device information manually"
+                })
+            })
+        )
+
+    async def async_step_scan(self, user_input=None) -> FlowResult:
+        """Scan for devices in pairing mode."""
+        errors = {}
+
+        if user_input is not None:
+            if "device" in user_input:
+                # User selected a device from the scan results
+                identifier = user_input["device"]
+                await self.async_set_unique_id(identifier)
+                self._abort_if_unique_id_configured()
+                
+                # Store device info for configuration step
+                self.context["title_placeholders"] = {
+                    "name": "RørosHetta Sense",
+                    "identifier": identifier[-5:],
+                }
+                return await self.async_step_configure()
+            else:
+                # User clicked "Rescan" or "Manual Setup"
+                if user_input.get("action") == "manual":
+                    return await self.async_step_manual()
+                # Otherwise, fall through to rescan
+
+        # Perform device scan
+        try:
+            discovered_devices = await self._scan_for_pairing_devices()
+            if not discovered_devices:
+                errors["base"] = "no_devices_found"
+            else:
+                # Create dropdown with discovered devices
+                device_options = {
+                    device["address"]: f"{device['name']} ({device['address'][-5:]})" 
+                    for device in discovered_devices
+                }
+                
+                schema = vol.Schema({
+                    vol.Required("device"): vol.In(device_options),
+                })
+                
+                return self.async_show_form(
+                    step_id="scan",
+                    data_schema=schema,
+                    errors=errors,
+                    description_placeholders={
+                        "count": len(discovered_devices)
+                    }
+                )
+        except Exception as e:
+            _LOGGER.error("Device scan failed: %s", e)
+            errors["base"] = "scan_failed"
+
+        # Show scanning form with retry/manual options
+        schema = vol.Schema({
+            vol.Required("action", default="rescan"): vol.In({
+                "rescan": "Scan again",
+                "manual": "Enter device manually"
+            })
+        })
+        
+        return self.async_show_form(
+            step_id="scan",
+            data_schema=schema,
+            errors=errors
+        )
+
+    async def async_step_manual(self, user_input=None) -> FlowResult:
+        """Handle manual device entry."""
         errors = {}
 
         if user_input is not None:
@@ -128,3 +211,29 @@ class RorosHettaSenseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             raise HomeAssistantError(f"Device {identifier} not reachable")
         
         _LOGGER.debug("Connection test successful for device %s", identifier)
+
+    async def _scan_for_pairing_devices(self) -> list[dict[str, str]]:
+        """Scan for RørosHetta devices that might be in pairing mode."""
+        try:
+            scanner = bluetooth.async_get_scanner(self.hass)
+            # Scan for devices advertising our service UUID
+            discovered_devices = []
+            
+            # Get recent service info for our service UUID
+            service_infos = bluetooth.async_discovered_service_info(
+                self.hass, connectable=True
+            )
+            
+            for service_info in service_infos:
+                if SERVICE_UUID.lower() in [uuid.lower() for uuid in service_info.service_uuids]:
+                    discovered_devices.append({
+                        "address": service_info.address,
+                        "name": service_info.name or "RørosHetta Sense",
+                        "rssi": service_info.rssi
+                    })
+            
+            return discovered_devices
+            
+        except Exception as e:
+            _LOGGER.error("Failed to scan for devices: %s", e)
+            raise
