@@ -35,6 +35,16 @@ class SenseBleController:
         self._max_retries = 3
 
     async def connect(self) -> None:
+        # Always clean up any existing client first to prevent slot leaks
+        if self._client:
+            try:
+                if self._client.is_connected:
+                    await self._client.disconnect()
+            except Exception as e:
+                _LOGGER.debug("Error disconnecting existing client: %s", e)
+            finally:
+                self._client = None
+                
         if self._client and self._client.is_connected:
             return
             
@@ -64,39 +74,24 @@ class SenseBleController:
                 self._connection_attempts = 0
                 return
                 
-            except BleakDeviceNotFoundError:
-                _LOGGER.warning(
-                    "Device %s not found (attempt %d/%d)", 
-                    self._cfg.identifier, attempt + 1, self._max_retries
-                )
-                if self._client:
-                    self._client = None
-                    
-            except BleakError as e:
-                _LOGGER.warning(
-                    "BLE error connecting to %s (attempt %d/%d): %s",
-                    self._cfg.identifier, attempt + 1, self._max_retries, e
-                )
-                if self._client:
-                    try:
-                        await self._client.disconnect()
-                    except Exception:
-                        pass
-                    finally:
-                        self._client = None
-                        
             except Exception as e:
-                _LOGGER.error(
-                    "Unexpected error connecting to %s (attempt %d/%d): %s",
-                    self._cfg.identifier, attempt + 1, self._max_retries, e
-                )
-                if self._client:
-                    try:
-                        await self._client.disconnect()
-                    except Exception:
-                        pass
-                    finally:
-                        self._client = None
+                if isinstance(e, BleakDeviceNotFoundError):
+                    _LOGGER.warning(
+                        "Device %s not found (attempt %d/%d)", 
+                        self._cfg.identifier, attempt + 1, self._max_retries
+                    )
+                elif isinstance(e, BleakError):
+                    _LOGGER.warning(
+                        "BLE error connecting to %s (attempt %d/%d): %s",
+                        self._cfg.identifier, attempt + 1, self._max_retries, e
+                    )
+                else:
+                    _LOGGER.error(
+                        "Unexpected error connecting to %s (attempt %d/%d): %s",
+                        self._cfg.identifier, attempt + 1, self._max_retries, e
+                    )
+                # Clean up failed client to prevent slot leak
+                await self._cleanup_client()
                         
             if attempt < self._max_retries - 1:
                 await asyncio.sleep(2 ** attempt)  # Exponential backoff
@@ -105,11 +100,20 @@ class SenseBleController:
         raise BleakError(f"Failed to connect to device {self._cfg.identifier} after {self._max_retries} attempts")
 
     async def disconnect(self) -> None:
+        await self._cleanup_client()
+
+    async def _cleanup_client(self) -> None:
+        """Properly clean up BLE client to prevent connection slot leaks."""
         if self._client:
             try:
-                await self._client.disconnect()
+                if self._client.is_connected:
+                    _LOGGER.debug("Disconnecting BLE client for cleanup")
+                    await self._client.disconnect()
+            except Exception as e:
+                _LOGGER.debug("Error during client cleanup: %s", e)
             finally:
                 self._client = None
+                _LOGGER.debug("BLE client cleaned up")
 
     async def _write(self, payload: bytes, delay_s: float = 0.2) -> None:
         _LOGGER.info(
@@ -153,14 +157,8 @@ class SenseBleController:
                     _LOGGER.error("BLE ERROR: Write operation timed out")
                 else:
                     _LOGGER.error("BLE ERROR: Unknown BLE error type: %s", type(e).__name__)
-                # Force reconnection on next attempt
-                if self._client:
-                    try:
-                        await self._client.disconnect()
-                    except Exception:
-                        pass
-                    finally:
-                        self._client = None
+                # Force cleanup to free connection slot
+                await self._cleanup_client()
                         
                 if attempt < self._max_retries - 1:
                     await asyncio.sleep(1)
@@ -169,14 +167,8 @@ class SenseBleController:
                     
             except Exception as e:
                 _LOGGER.error("Unexpected error in BLE write: %s", e)
-                # Force reconnection on next attempt  
-                if self._client:
-                    try:
-                        await self._client.disconnect()
-                    except Exception:
-                        pass
-                    finally:
-                        self._client = None
+                # Force cleanup to free connection slot
+                await self._cleanup_client()
                         
                 if attempt < self._max_retries - 1:
                     await asyncio.sleep(1)
