@@ -1,6 +1,6 @@
-import logging
-
 from __future__ import annotations
+
+import logging
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
